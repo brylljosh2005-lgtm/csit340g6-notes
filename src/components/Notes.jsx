@@ -45,7 +45,6 @@ function Notes() {
     setForm({ title: '', body: '' })
   }
 
-  // 1 & 2. Delete handler function using filter
   const handleDelete = (id) => {
     setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id))
   }
@@ -100,7 +99,6 @@ function Notes() {
               className="relative min-h-32 bg-white px-6 py-5 shadow-[0_2px_4px_0_rgba(0,0,0,0.2),0_25px_50px_0_rgba(0,0,0,0.1)]"
             >
               <NoteCard title={note.title} body={note.body} />
-              {/* Pass note.id into the delete button onClick handler */}
               <button
                 type="button"
                 onClick={() => handleDelete(note.id)}
@@ -111,6 +109,11 @@ function Notes() {
             </li>
           ))}
         </ul>
+
+        {/* Empty message fallback shown right below </ul> */}
+        {notes.length === 0 && (
+          <p className="text-lg text-[#949494]">No notes found</p>
+        )}
       </section>
     </div>
   )
