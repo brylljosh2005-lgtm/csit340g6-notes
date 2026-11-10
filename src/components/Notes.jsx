@@ -4,19 +4,30 @@ import NoteCard from './NoteCard.jsx'
 function Notes() {
   const [notes, setNotes] = useState([
     {
-      id: 1,
+      id: '1',
       title: 'Review map and filter',
       body: 'Redo the TodoMVC steps without looking at the guide.',
     },
     {
-      id: 2,
+      id: '2',
       title: 'Prepare for the quiz',
       body: 'Practice writing one handler for many inputs.',
     },
   ])
 
-  return (
+  // 1. Add form state
+  const [form, setForm] = useState({ title: '', body: '' })
 
+  // 2. Create generic change handler using name and value
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setForm((prevForm) => ({
+      ...prevForm,
+      [name]: value,
+    }))
+  }
+
+  return (
     <div className="grid min-h-screen grid-cols-[420px_1fr]">
       <aside className="sticky top-0 flex h-screen flex-col gap-5 bg-white px-8 py-9 shadow-[0_2px_4px_0_rgba(0,0,0,0.2),0_25px_50px_0_rgba(0,0,0,0.1)]">
         <h1 className="text-[72px] leading-none font-extralight text-[#b83f45]">
@@ -33,14 +44,20 @@ function Notes() {
 
         <form className="grid gap-3">
           <p className="text-[13px] font-normal tracking-wide text-[#949494]">NEW NOTE</p>
+          {/* 3. Bind value and onChange to title input */}
           <input
             name="title"
             placeholder="Title"
+            value={form.title}
+            onChange={handleChange}
             className="h-[52px] w-full border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]"
           />
+          {/* 3. Bind value and onChange to textarea */}
           <textarea
             name="body"
             placeholder="Write your note"
+            value={form.body}
+            onChange={handleChange}
             className="h-[120px] w-full resize-none py-3 border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]"
           />
           <button
@@ -56,21 +73,21 @@ function Notes() {
         <h2 className="mb-6 text-3xl">All notes</h2>
 
         <ul className="grid grid-cols-3 items-start gap-5">
-  {notes.map((note) => (
-    <li
-  key={note.id}
-  className="relative min-h-32 bg-white px-6 py-5 shadow-[0_2px_4px_0_rgba(0,0,0,0.2),0_25px_50px_0_rgba(0,0,0,0.1)]"
->
-  <NoteCard title={note.title} body={note.body} />
-      <button
-        type="button"
-        className="absolute top-4 right-5 cursor-pointer text-[26px] leading-none text-[#949494] hover:text-[#c18585]"
-      >
-        ×
-      </button>
-    </li>
-  ))}
-</ul>
+          {notes.map((note) => (
+            <li
+              key={note.id}
+              className="relative min-h-32 bg-white px-6 py-5 shadow-[0_2px_4px_0_rgba(0,0,0,0.2),0_25px_50px_0_rgba(0,0,0,0.1)]"
+            >
+              <NoteCard title={note.title} body={note.body} />
+              <button
+                type="button"
+                className="absolute top-4 right-5 cursor-pointer text-[26px] leading-none text-[#949494] hover:text-[#c18585]"
+              >
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
       </section>
     </div>
   )
