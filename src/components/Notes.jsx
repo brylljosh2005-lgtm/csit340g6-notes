@@ -15,16 +15,37 @@ function Notes() {
     },
   ])
 
-  // 1. Add form state
   const [form, setForm] = useState({ title: '', body: '' })
 
-  // 2. Create generic change handler using name and value
   const handleChange = (e) => {
     const { name, value } = e.target
     setForm((prevForm) => ({
       ...prevForm,
       [name]: value,
     }))
+  }
+
+  // 1-5. Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    const trimmedTitle = form.title.trim()
+    const trimmedBody = form.body.trim()
+
+    // Check that neither is empty after trimming
+    if (!trimmedTitle || !trimmedBody) {
+      return
+    }
+
+    const newNote = {
+      id: Date.now().toString(),
+      title: trimmedTitle,
+      body: trimmedBody,
+    }
+
+    // Update notes state and reset form inputs
+    setNotes((prevNotes) => [...prevNotes, newNote])
+    setForm({ title: '', body: '' })
   }
 
   return (
@@ -42,9 +63,9 @@ function Notes() {
           />
         </div>
 
-        <form className="grid gap-3">
+        {/* Attach onSubmit handler */}
+        <form onSubmit={handleSubmit} className="grid gap-3">
           <p className="text-[13px] font-normal tracking-wide text-[#949494]">NEW NOTE</p>
-          {/* 3. Bind value and onChange to title input */}
           <input
             name="title"
             placeholder="Title"
@@ -52,7 +73,6 @@ function Notes() {
             onChange={handleChange}
             className="h-[52px] w-full border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]"
           />
-          {/* 3. Bind value and onChange to textarea */}
           <textarea
             name="body"
             placeholder="Write your note"
