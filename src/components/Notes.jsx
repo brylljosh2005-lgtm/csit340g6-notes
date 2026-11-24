@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from 'react'
+import { useState, useEffect, useRef, useContext, useMemo } from 'react'
 import NoteCard from './NoteCard.jsx'
 import { SettingsContext } from '../SettingsContext.js'
 
@@ -34,12 +34,12 @@ function Notes() {
     const id = setTimeout(() => {
       localStorage.setItem('draft', JSON.stringify(form))
     }, 1000)
-    return () => clearTimeout(id)//it never prints
+    return () => clearTimeout(id)
   }, [form])
 
   useEffect(() => {
-  titleRef.current?.focus()
-}, [])
+    titleRef.current?.focus()
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -67,14 +67,19 @@ function Notes() {
 
     setNotes((prevNotes) => [...prevNotes, newNote])
     setForm({ title: '', body: '' })
+    titleRef.current?.focus()
   }
 
   const handleDelete = (id) => {
     setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id))
   }
 
-  const filteredNotes = notes.filter((note) =>
-    note.title.toLowerCase().includes(search.toLowerCase())
+  const filteredNotes = useMemo(
+    () =>
+      notes.filter((note) =>
+        note.title.toLowerCase().includes(search.toLowerCase())
+      ),
+    [notes, search]
   )
 
   return (
@@ -86,7 +91,6 @@ function Notes() {
 
         <div>
           <p className="mb-2 text-[13px] font-normal tracking-wide text-[#949494]">SEARCH</p>
-          {/* Bind value and onChange to search input */}
           <input
             placeholder="Search by title"
             value={search}
@@ -119,15 +123,16 @@ function Notes() {
             Add note
           </button>
         </form>
+
         <label className="flex cursor-pointer items-center gap-2 text-sm text-[#666]">
-  <input
-    type="checkbox"
-    checked={largeText}
-    onChange={(e) => setLargeText(e.target.checked)}
-    className="h-4 w-4 accent-[#b83f45]"
-  />
-  Large text
-</label>
+          <input
+            type="checkbox"
+            checked={largeText}
+            onChange={(e) => setLargeText(e.target.checked)}
+            className="h-4 w-4 accent-[#b83f45]"
+          />
+          Large text
+        </label>
       </aside>
 
       <section className="px-12 py-11">
