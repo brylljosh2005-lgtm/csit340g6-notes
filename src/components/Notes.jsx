@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import NoteCard from './NoteCard.jsx'
 
 function Notes() {
@@ -16,9 +16,10 @@ function Notes() {
   ])
 
   const [form, setForm] = useState({ title: '', body: '' })
-  
-  // 1. Track search input state
   const [search, setSearch] = useState('')
+  useEffect(() => {
+  localStorage.setItem('notes', JSON.stringify(notes))
+}, [notes])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -52,7 +53,7 @@ function Notes() {
     setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id))
   }
 
-  // 2. Filter notes by title (case-insensitive) using search state
+  
   const filteredNotes = notes.filter((note) =>
     note.title.toLowerCase().includes(search.toLowerCase())
   )
@@ -104,7 +105,7 @@ function Notes() {
         <h2 className="mb-6 text-3xl">All notes</h2>
 
         <ul className="grid grid-cols-3 items-start gap-5">
-          {/* Map over filteredNotes instead of notes */}
+          {}
           {filteredNotes.map((note) => (
             <li
               key={note.id}
@@ -122,7 +123,7 @@ function Notes() {
           ))}
         </ul>
 
-        {/* 3. Check against filteredNotes length so search results trigger the message properly */}
+        {}
         {filteredNotes.length === 0 && (
           <p className="text-lg text-[#949494]">No notes found</p>
         )}
