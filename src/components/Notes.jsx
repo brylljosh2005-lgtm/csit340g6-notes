@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext, useMemo } from 'react'
+import { useState, useEffect, useRef, useContext, useMemo, useCallback } from 'react'
 import NoteCard from './NoteCard.jsx'
 import { SettingsContext } from '../SettingsContext.js'
 
@@ -41,38 +41,41 @@ function Notes() {
     titleRef.current?.focus()
   }, [])
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target
     setForm((prevForm) => ({
       ...prevForm,
       [name]: value,
     }))
-  }
+  }, [])
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault()
 
-    const trimmedTitle = form.title.trim()
-    const trimmedBody = form.body.trim()
+      const trimmedTitle = form.title.trim()
+      const trimmedBody = form.body.trim()
 
-    if (!trimmedTitle || !trimmedBody) {
-      return
-    }
+      if (!trimmedTitle || !trimmedBody) {
+        return
+      }
 
-    const newNote = {
-      id: Date.now().toString(),
-      title: trimmedTitle,
-      body: trimmedBody,
-    }
+      const newNote = {
+        id: Date.now().toString(),
+        title: trimmedTitle,
+        body: trimmedBody,
+      }
 
-    setNotes((prevNotes) => [...prevNotes, newNote])
-    setForm({ title: '', body: '' })
-    titleRef.current?.focus()
-  }
+      setNotes((prevNotes) => [...prevNotes, newNote])
+      setForm({ title: '', body: '' })
+      titleRef.current?.focus()
+    },
+    [form.title, form.body]
+  )
 
-  const handleDelete = (id) => {
+  const handleDelete = useCallback((id) => {
     setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id))
-  }
+  }, [])
 
   const filteredNotes = useMemo(
     () =>
@@ -83,14 +86,18 @@ function Notes() {
   )
 
   return (
-    <div className={`grid min-h-screen grid-cols-[420px_1fr] ${largeText ? 'text-xl' : ''}`}>
+    <div
+      className={`grid min-h-screen grid-cols-[420px_1fr] ${largeText ? 'text-xl' : ''}`}
+    >
       <aside className="sticky top-0 flex h-screen flex-col gap-5 bg-white px-8 py-9 shadow-[0_2px_4px_0_rgba(0,0,0,0.2),0_25px_50px_0_rgba(0,0,0,0.1)]">
         <h1 className="text-[72px] leading-none font-extralight text-[#b83f45]">
           notes
         </h1>
 
         <div>
-          <p className="mb-2 text-[13px] font-normal tracking-wide text-[#949494]">SEARCH</p>
+          <p className="mb-2 text-[13px] font-normal tracking-wide text-[#949494]">
+            SEARCH
+          </p>
           <input
             placeholder="Search by title"
             value={search}
@@ -100,7 +107,9 @@ function Notes() {
         </div>
 
         <form onSubmit={handleSubmit} className="grid gap-3">
-          <p className="text-[13px] font-normal tracking-wide text-[#949494]">NEW NOTE</p>
+          <p className="text-[13px] font-normal tracking-wide text-[#949494]">
+            NEW NOTE
+          </p>
           <input
             ref={titleRef}
             name="title"
@@ -114,7 +123,7 @@ function Notes() {
             placeholder="Write your note"
             value={form.body}
             onChange={handleChange}
-            className="h-[120px] w-full resize-none py-3 border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]"
+            className="h-[120px] w-full resize-none border border-[#e6e6e6] px-4 py-3 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]"
           />
           <button
             type="submit"
