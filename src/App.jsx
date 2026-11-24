@@ -1,12 +1,16 @@
+import { useState } from 'react'
 import Notes from './components/Notes.jsx'
 import Info from './components/Info.jsx'
+import { SettingsContext } from './SettingsContext.js'
 
 function App() {
+  const [largeText, setLargeText] = useState(false)
+
   return (
-    <div className="bg-[#f5f5f5] font-light text-[#111]">
+    <SettingsContext.Provider value={{ largeText, setLargeText }}>
       <Notes />
-      <Info name="YOUR NAME" />
-    </div>
+      <Info />
+    </SettingsContext.Provider>
   )
 }
 

@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
 import NoteCard from './NoteCard.jsx'
+import { SettingsContext } from '../SettingsContext.js'
 
 const startingNotes = [
   {
@@ -15,6 +16,7 @@ const startingNotes = [
 ]
 
 function Notes() {
+  const { largeText, setLargeText } = useContext(SettingsContext)
   const [notes, setNotes] = useState(() => {
     const saved = localStorage.getItem('notes')
     return saved ? JSON.parse(saved) : startingNotes
@@ -76,7 +78,7 @@ function Notes() {
   )
 
   return (
-    <div className="grid min-h-screen grid-cols-[420px_1fr]">
+    <div className={`grid min-h-screen grid-cols-[420px_1fr] ${largeText ? 'text-xl' : ''}`}>
       <aside className="sticky top-0 flex h-screen flex-col gap-5 bg-white px-8 py-9 shadow-[0_2px_4px_0_rgba(0,0,0,0.2),0_25px_50px_0_rgba(0,0,0,0.1)]">
         <h1 className="text-[72px] leading-none font-extralight text-[#b83f45]">
           notes
@@ -117,6 +119,15 @@ function Notes() {
             Add note
           </button>
         </form>
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-[#666]">
+  <input
+    type="checkbox"
+    checked={largeText}
+    onChange={(e) => setLargeText(e.target.checked)}
+    className="h-4 w-4 accent-[#b83f45]"
+  />
+  Large text
+</label>
       </aside>
 
       <section className="px-12 py-11">
