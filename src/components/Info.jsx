@@ -1,7 +1,14 @@
-function Info({ name }) {
+import { useContext } from 'react'
+import { SettingsContext } from '../SettingsContext.js'
+
+function Info() {
+  const { largeText } = useContext(SettingsContext)
+
   return (
-    <footer className="fixed bottom-7 left-8 z-10 text-[13px] text-[#949494]">
-      <p>Created by {name}</p>
+    <footer
+      className={`py-8 text-center text-[#949494] ${largeText ? 'text-base' : 'text-xs'}`}
+    >
+      <p>Notes App — Built with React Hooks</p>
     </footer>
   )
 }
